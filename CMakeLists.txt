@@ -12,8 +12,9 @@ elseif(WIN32)
 else()
   message(FATAL_ERROR "Unsupported platform ${CMAKE_SYSTEM_NAME}")
 endif()
-
-find_program(CMAKE_C_COMPILER NAMES ${CC} REQUIRED)
+if(NOT WIN32)
+    find_program(CMAKE_C_COMPILER NAMES ${CC} REQUIRED)
+endif(NOT WIN32)
 
 project(CPython
 LANGUAGES C

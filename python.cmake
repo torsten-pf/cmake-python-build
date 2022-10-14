@@ -3,6 +3,8 @@ string(JSON python_url GET ${json_meta} python url)
 if(NOT python_tag)
   string(JSON python_tag GET ${json_meta} python tag)
 endif()
+# extract the version number from python_tag
+string(REGEX REPLACE "^v(.*)" "\\1" PYTHON_VER "${python_tag}")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(BUILD_LAYOUT_OPTIONS "-d")
@@ -49,12 +51,7 @@ if(WIN32)
   
   SET(CPACK_GENERATOR "TGZ")
   SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-  # determine version from patchlevel.h
-  # retrieve version from header file
-  file (STRINGS "${CMAKE_CURRENT_BINARY_DIR}/install/include/patchlevel.h" version REGEX "^#define[ \t]+PY_VERSION[ \t]+\"[^\"]+\"")
-  string(REGEX REPLACE "^#define[ \t]+PY_VERSION[ \t]+\"([^\"]+)\".*" "\\1" version "${version}")
-  string(TOLOWER "python-${version}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_BUILD_TYPE}" CPACK_PACKAGE_FILE_NAME)
-
+  string(TOLOWER "python-${PYTHON_VER}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_BUILD_TYPE}" CPACK_PACKAGE_FILE_NAME)
   include(cpack)
 else()
   # Linux prereqs: https://devguide.python.org/setup/#linux
